@@ -1,21 +1,42 @@
 var wordlist = ["laptop", "bottle", "tiger", "corruption", "palace", "rhythym", "relationship", "education", "calendar", "violin", "mirror", "curriculum", "party", "patience", "example"];
 var timer = document.querySelector("#second");
 var secondsLeft = timer.getAttribute("data-seconds");
+var wins = document.querySelector("#current-wins");
+var losses = document.querySelector("#current-losses");
 var charList = [];
 var blankList = [];
 var chosenWord = document.querySelector("#chosen-word");
 var blankWord = "";
+var randomWord = "";
+var continueListening = false;
+var lossCount = 0;
+var winCount = 0;
+var scores = {
+    wins: 0,
+    losses: 0
+}
+
+var scoreHistory = JSON.parse(localStorage.getItem("scoresHistory"));
+if(scoreHistory !== null){
+    wins.textContent = scoreHistory.wins;
+    losses.textContent = scoreHistory.losses;
+    lossCount = scoreHistory.losses;
+    winCount = scoreHistory.wins;
+}
+else{
+    wins.textContent = 0; 
+    losses.textContent = 0; 
+    lossCount = 0;
+    winCount = 0;
+}
 
 function start() {
     var randomIndex = Math.floor(Math.random()* wordlist.length);
-    var randomWord = wordlist[randomIndex];
+    randomWord = wordlist[randomIndex];
     var chosenWordLength = randomWord.length;
     blankWord = "";
-    
-    for (var i = 0; i < charList.length; i++) {
-        charList.pop();
-        blankList.pop();
-    }
+    charList = [];
+    blankList =[];
 
     for (var i = 0; i < chosenWordLength; i++) {
         blankWord += "-";
@@ -24,6 +45,7 @@ function start() {
     }
 
     chosenWord.textContent = blankWord;
+    continueListening = true;
 }
 
 document.addEventListener("click", function(event) {
@@ -33,30 +55,64 @@ document.addEventListener("click", function(event) {
         start();
         setTimer();
     }
+    if (element.matches("#reset")) {
+        resetInfo();
+    }
 })
 
 function setTimer() {
-    secondsLeft = timer.getAttribute("data-seconds");
+    secondsLeft = parseInt(timer.getAttribute("data-seconds"));
     var timeInterval = setInterval(function() {
         secondsLeft--;
         timer.textContent = secondsLeft;
+
         if(secondsLeft === 0) {
             clearInterval(timeInterval);
-            chosenWord.textContent = "You lost";
+            if(blankWord === randomWord)
+            {
+                winCount++;
+                wins.textContent = winCount;
+                chosenWord.textContent = "You Won!";
+                continueListening = false;
+            }
+            else{
+                lossCount++;
+                losses.textContent = lossCount;
+                chosenWord.textContent = "You lost!"; 
+                continueListening = false;      
+            }
         }
+        else{
+            if(blankWord === randomWord)
+            {
+                clearInterval(timeInterval);
+                winCount++;
+                wins.textContent = winCount;
+                chosenWord.textContent = "You Won!";
+                continueListening = false;
+            }
+        }
+        scores.wins = winCount;
+        scores.losses = lossCount;
+        localStorage.setItem("scoresHistory", JSON.stringify(scores));
+
     }, 1000)
 }
 
 document.addEventListener("keydown", function(event) {
     var element = event.target;
     var key = event.key.toLowerCase();
-    checkLetter(key);
+    console.log(continueListening);
+    if (continueListening){
+        checkLetter(key);
+    }
 })
 
 function checkLetter(key) {
     for (var i = 0; i < charList.length; i++) {
         if (charList[i] === key) {
             blankList[i] = key;
+            
         }
 
     }
@@ -65,4 +121,13 @@ function checkLetter(key) {
         blankWord += blankList[i];
     }
     chosenWord.textContent = blankWord;
+}
+
+function resetInfo(){
+    wins.textContent = 0; 
+    losses.textContent = 0; 
+    lossCount = 0;
+    winCount = 0;
+    localStorage.clear();
+    timer.textContent = "0";
 }
