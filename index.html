@@ -14,15 +14,19 @@
     </header>
     <section class="container">
         <section class="word">
+            <p id="chosen-word">chosen word</p>
         </section>
         <section class="score-reset">
             <section id="scores">
-                <p id="wins">Wins: </p>
-                <p id="losses">Losses: </p>
-                <button id="reset" type="button"></button>
+                <section id="wins-losses">
+                    <p id="wins">Wins: <span id="current-wins">0</span></p>
+                    <p id="losses">Losses: <span id="current-losses">0</span></p>
+                </section>
+                <button id="reset" type="button">Reset Scores</button>
             </section>
             <section id="timer">
-                <p id="time-left"></p>
+                <p id="second">10</p>
+                <p id="time-left">seconds remaining</p>
             </section>
         </section>
     </section>
