@@ -105,22 +105,4 @@ body{
     margin-top: 100px;
 }
 
-@media screen and (max-width: 992px) {
-    #container{
-        flex-direction:column;
-    }
-    .word{
-        margin-top: 50px;
-    }
-}
-  
-/*
-@media screen and (max-width: 768px) {
-    
-    
-}
-  
-@media screen and (max-width: 576px ) {
-
-}*/
   
