@@ -15,6 +15,7 @@ var scores = {
     wins: 0,
     losses: 0
 }
+var letterList = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 var scoreHistory = JSON.parse(localStorage.getItem("scoresHistory"));
 if(scoreHistory !== null){
@@ -100,6 +101,7 @@ function setTimer() {
 }
 
 document.addEventListener("keydown", function(event) {
+    event.preventDefault();
     var element = event.target;
     var key = event.key.toLowerCase();
     console.log(continueListening);
@@ -109,18 +111,20 @@ document.addEventListener("keydown", function(event) {
 })
 
 function checkLetter(key) {
-    for (var i = 0; i < charList.length; i++) {
-        if (charList[i] === key) {
-            blankList[i] = key;
-            
+    if (letterList.indexOf(key) !== -1) {
+        for (var i = 0; i < charList.length; i++) {
+            if (charList[i] === key) {
+                blankList[i] = key;
+            }
+    
         }
-
+        blankWord = "";
+        for (var i = 0; i < blankList.length; i++) {
+            blankWord += blankList[i];
+        }
+        chosenWord.textContent = blankWord;
     }
-    blankWord = "";
-    for (var i = 0; i < blankList.length; i++) {
-        blankWord += blankList[i];
-    }
-    chosenWord.textContent = blankWord;
+    
 }
 
 function resetInfo(){
